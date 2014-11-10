@@ -7,10 +7,10 @@
 //
 
 #import "Event.h"
+#define kURLSearcStringForEvent @"https://api.meetup.com/2/open_events.json?zip=60604&text=%@&time=,1w&key=41c4c15142b5d1f27d5e666e4b1e44"
 
 @implementation Event
 @class Event;
-
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
@@ -33,7 +33,7 @@
 
 + (void)retrieveEventsWithString:(NSString *)keyword andCompletion:(void(^)(NSArray *eventObjectsArray, NSError *error))complete
 {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.meetup.com/2/open_events.json?zip=60604&text=%@&time=,1w&key=41c4c15142b5d1f27d5e666e4b1e44",keyword]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kURLSearcStringForEvent,keyword]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
     [NSURLConnection sendAsynchronousRequest:request
@@ -46,16 +46,10 @@
                                {
                                    NSArray *eventDictionariesArray = [[NSJSONSerialization JSONObjectWithData:data
                                                                                          options:NSJSONReadingAllowFragments
-                                                                                           error:nil] objectForKey:@"results"];
+                                                                                           error:&JSONError] objectForKey:@"results"];
                                    if (!JSONError)
                                    {
-                                       NSMutableArray *eventObjectsArray = [@[]mutableCopy];
-
-                                       for (NSDictionary *d in eventDictionariesArray)
-                                       {
-                                           Event *event = [[Event alloc]initWithDictionary:d];
-                                           [eventObjectsArray addObject:event];
-                                       }
+                                       NSArray *eventObjectsArray = [Event eventsFromArray:eventDictionariesArray];
                                        complete (eventObjectsArray, connectionError);
                                    }
 
@@ -71,7 +65,6 @@
                                }
                            }];
 }
-
 
 + (NSArray *)eventsFromArray:(NSArray *)incomingArray
 {

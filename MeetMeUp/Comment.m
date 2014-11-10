@@ -66,13 +66,7 @@
 
                                    if (!JSONError)
                                    {
-                                       NSMutableArray *commentObjectsArray = [@[]mutableCopy];
-
-                                       for (NSDictionary *d in jsonArray)
-                                       {
-                                           Comment *comment = [[Comment alloc]initWithDictionary:d];
-                                           [commentObjectsArray addObject:comment];
-                                       }
+                                       NSArray *commentObjectsArray = [Comment objectsFromArray:jsonArray];
                                        complete(commentObjectsArray, connectionError);
                                    }
                                    else
