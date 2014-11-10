@@ -17,11 +17,9 @@
     self = [super init];
     if (self)
     {
-        
         self.author = dictionary[@"member_name"];
         self.date = [Comment dateFromNumber:dictionary[@"time"]];
         self.text = dictionary[@"comment"];
-        
         self.memberID = dictionary[@"member_id"];
     }
     return self;
