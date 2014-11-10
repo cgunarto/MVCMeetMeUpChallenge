@@ -40,7 +40,6 @@
         [UIView animateWithDuration:.3 animations:^{
             self.photoImageView.alpha = 1;
         }];
-
     }];
 }
 

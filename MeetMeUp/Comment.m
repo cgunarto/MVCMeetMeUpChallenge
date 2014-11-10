@@ -7,6 +7,7 @@
 //
 
 #import "Comment.h"
+#define kURLEventIDforComments @"https://api.meetup.com/2/event_comments?&sign=true&photo-host=public&event_id=%@&page=20&key=41c4c15142b5d1f27d5e666e4b1e44"
 
 @implementation Comment
 
@@ -14,7 +15,8 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
     self = [super init];
-    if (self) {
+    if (self)
+    {
         
         self.author = dictionary[@"member_name"];
         self.date = [Comment dateFromNumber:dictionary[@"time"]];
@@ -44,5 +46,47 @@
     return  [NSDate dateWithTimeIntervalSince1970:interval];
     
 }
+
++ (void)retrieveCommentsWithEventIDString:(NSString *)eventID andCompletion:(void(^)(NSArray* commentObjectsArray, NSError *error))complete
+{
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kURLEventIDforComments,eventID]];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+                            {
+                               NSError *JSONError = nil;
+
+                               if (!connectionError)
+                               {
+                                   NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
+                                   NSArray *jsonArray = [dict objectForKey:@"results"];
+
+                                   if (!JSONError)
+                                   {
+                                       NSMutableArray *commentObjectsArray = [@[]mutableCopy];
+
+                                       for (NSDictionary *d in jsonArray)
+                                       {
+                                           Comment *comment = [[Comment alloc]initWithDictionary:d];
+                                           [commentObjectsArray addObject:comment];
+                                       }
+                                       complete(commentObjectsArray, connectionError);
+                                   }
+                                   else
+                                   {
+                                       complete(nil,JSONError);
+                                   }
+                               }
+                               else
+                               {
+                                   complete(nil,connectionError);
+                               }
+                           }];
+
+}
+
 
 @end

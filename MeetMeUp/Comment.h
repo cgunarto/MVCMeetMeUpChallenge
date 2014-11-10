@@ -18,4 +18,6 @@
 + (NSArray *)objectsFromArray:(NSArray *)incomingArray;
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
++ (void)retrieveCommentsWithEventIDString:(NSString *)eventID andCompletion:(void(^)(NSArray* commentObjectsArray, NSError *error))complete;
+
 @end
