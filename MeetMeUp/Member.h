@@ -20,5 +20,8 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
++ (void)retrieveEventsWithMemberIDString:(NSString *)memberID andCompletion:(void(^)(Member *member, NSError *error))complete;
+
+- (void)retrieveImageWithCompletion:(void(^)(NSData *imageData, NSError *error))complete;
 
 @end

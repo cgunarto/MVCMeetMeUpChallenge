@@ -22,6 +22,11 @@
 @property (nonatomic, strong) NSArray *commentsArray;
 
 + (NSArray *)eventsFromArray:(NSArray *)incomingArray;
+
++ (void)retrieveEventsWithString:(NSString *)keyword andCompletion:(void(^)(NSArray *eventObjectsArray, NSError *error))complete;
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+- (void)retrieveImageWithCompletion:(void(^)(NSData *imageData, NSError *error))complete;
+
 
 @end

@@ -85,10 +85,10 @@
 		23C1468419EDD38900D565E1 /* Data Model */ = {
 			isa = PBXGroup;
 			children = (
-				23D10C5019BE33B9001F060E /* Member.h */,
-				23D10C5119BE33B9001F060E /* Member.m */,
 				23D10C4119BE002C001F060E /* Event.h */,
 				23D10C4219BE002C001F060E /* Event.m */,
+				23D10C5019BE33B9001F060E /* Member.h */,
+				23D10C5119BE33B9001F060E /* Member.m */,
 				23D10C4A19BE0DF5001F060E /* Comment.h */,
 				23D10C4B19BE0DF5001F060E /* Comment.m */,
 			);

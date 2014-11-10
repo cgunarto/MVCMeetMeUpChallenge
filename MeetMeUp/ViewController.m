@@ -20,33 +20,26 @@
 
 @implementation ViewController
             
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 
-    [self performSearchWithKeyword:@"mobile"];
-
+    [Event retrieveEventsWithString:@"mobile" andCompletion:^(NSArray *eventObjectsArray, NSError *error)
+    {
+        if (error)
+        {
+            NSLog(@"error %@",error.localizedDescription);
+        }
+        self.dataArray = eventObjectsArray;
+    }];
 }
 
-- (void)performSearchWithKeyword:(NSString *)keyword
+-(void)setDataArray:(NSArray *)dataArray
 {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.meetup.com/2/open_events.json?zip=60604&text=%@&time=,1w&key=4b6a576833454113112e241936657e47",keyword]];
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               
-                               NSArray *jsonArray = [[NSJSONSerialization JSONObjectWithData:data
-                                                                                     options:NSJSONReadingAllowFragments
-                                                                                       error:nil] objectForKey:@"results"];
-                               
-                               
-                               self.dataArray = [Event eventsFromArray:jsonArray];
-                               [self.tableView reloadData];
-                           }];
-
+    _dataArray = dataArray;
+    [self.tableView reloadData];
 }
+
 
 #pragma mark - Tableview Methods
 
@@ -63,26 +56,18 @@
     
     cell.textLabel.text = e.name;
     cell.detailTextLabel.text = e.address;
-    if (e.photoURL)
+    [e retrieveImageWithCompletion:^(NSData *imageData, NSError *error)
     {
-        NSURLRequest *imageReq = [NSURLRequest requestWithURL:e.photoURL];
-        
-        [NSURLConnection sendAsynchronousRequest:imageReq queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-           dispatch_async(dispatch_get_main_queue(), ^{
-               if (!connectionError) {
-                   [cell.imageView setImage:[UIImage imageWithData:data]];
-                   [cell layoutSubviews];
-               }
-           });
-
-
-        }];
-        
-        
-    }else
-    {
-       [cell.imageView setImage:[UIImage imageNamed:@"logo"]];
-    }
+        if (!error)
+        {
+            [cell.imageView setImage:[UIImage imageWithData:imageData]];
+        }
+        else
+        {
+            [cell.imageView setImage:[UIImage imageNamed:@"logo"]];
+        }
+        [cell layoutSubviews];
+    }];
     
     return cell;
 }
@@ -100,7 +85,14 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    [self performSearchWithKeyword:searchBar.text];
+    [Event retrieveEventsWithString:searchBar.text andCompletion:^(NSArray *eventObjectsArray, NSError *error) {
+        if (error)
+        {
+            NSLog(@"error %@",error.localizedDescription);
+        }
+        self.dataArray = eventObjectsArray;
+    }];
+
     [searchBar resignFirstResponder];
 }
 

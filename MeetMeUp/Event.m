@@ -9,6 +9,7 @@
 #import "Event.h"
 
 @implementation Event
+@class Event;
 
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
@@ -30,6 +31,48 @@
     return self;
 }
 
++ (void)retrieveEventsWithString:(NSString *)keyword andCompletion:(void(^)(NSArray *eventObjectsArray, NSError *error))complete
+{
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.meetup.com/2/open_events.json?zip=60604&text=%@&time=,1w&key=41c4c15142b5d1f27d5e666e4b1e44",keyword]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+
+                               NSError *JSONError = nil;
+
+                               if (!connectionError)
+                               {
+                                   NSArray *eventDictionariesArray = [[NSJSONSerialization JSONObjectWithData:data
+                                                                                         options:NSJSONReadingAllowFragments
+                                                                                           error:nil] objectForKey:@"results"];
+                                   if (!JSONError)
+                                   {
+                                       NSMutableArray *eventObjectsArray = [@[]mutableCopy];
+
+                                       for (NSDictionary *d in eventDictionariesArray)
+                                       {
+                                           Event *event = [[Event alloc]initWithDictionary:d];
+                                           [eventObjectsArray addObject:event];
+                                       }
+                                       complete (eventObjectsArray, connectionError);
+                                   }
+
+                                   else
+                                   {
+                                       complete (nil,JSONError);
+                                   }
+                               }
+
+                               else
+                               {
+                                   complete (nil,connectionError);
+                               }
+                           }];
+}
+
+
 + (NSArray *)eventsFromArray:(NSArray *)incomingArray
 {
     NSMutableArray *newArray = [[NSMutableArray alloc] initWithCapacity:incomingArray.count];
@@ -41,6 +84,31 @@
     }
     return newArray;
 }
+
+- (void)retrieveImageWithCompletion:(void(^)(NSData *imageData, NSError *error))complete
+{
+    NSURLRequest *imageReq = [NSURLRequest requestWithURL:self.photoURL];
+
+    [NSURLConnection sendAsynchronousRequest:imageReq
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            if (!connectionError)
+            {
+                complete(data, connectionError);
+            }
+
+            else
+            {
+                complete(nil, connectionError);
+            }
+        });
+    }];
+}
+
+
+
 
 
 @end
