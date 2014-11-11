@@ -25,7 +25,8 @@
     return self;
 }
 
-+ (void)retrieveEventsWithMemberIDString:(NSString *)memberID andCompletion:(void(^)(Member *member, NSError *error))complete
+//Retrieve comments from memberID and returns an array with custom comment objects
++ (void)retrieveCommentsWithMemberIDString:(NSString *)memberID andCompletion:(void(^)(Member *member, NSError *error))complete
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kURLRetrieveMemberfromID,memberID]];
 
@@ -59,6 +60,7 @@
                            }];
 }
 
+//Helper method that takes NSString of photoURL and returns and NSData
 - (void)retrieveImageWithCompletion:(void(^)(NSData *imageData, NSError *error))complete
 {
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.photoURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)

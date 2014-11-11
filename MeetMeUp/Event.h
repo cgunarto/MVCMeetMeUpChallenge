@@ -21,11 +21,11 @@
 @property (nonatomic, strong) NSURL *photoURL;
 @property (nonatomic, strong) NSArray *commentsArray;
 
-+ (NSArray *)eventsFromArray:(NSArray *)incomingArray;
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
 + (void)retrieveEventsWithString:(NSString *)keyword andCompletion:(void(^)(NSArray *eventObjectsArray, NSError *error))complete;
++ (NSArray *)eventsFromArray:(NSArray *)incomingArray;
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 - (void)retrieveImageWithCompletion:(void(^)(NSData *imageData, NSError *error))complete;
 
 

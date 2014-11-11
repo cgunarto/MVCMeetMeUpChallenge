@@ -15,9 +15,9 @@
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSString *text;
 
++ (void)retrieveCommentsWithEventIDString:(NSString *)eventID andCompletion:(void(^)(NSArray* commentObjectsArray, NSError *error))complete;
 + (NSArray *)objectsFromArray:(NSArray *)incomingArray;
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
-+ (void)retrieveCommentsWithEventIDString:(NSString *)eventID andCompletion:(void(^)(NSArray* commentObjectsArray, NSError *error))complete;
 
 @end

@@ -31,6 +31,7 @@
     return self;
 }
 
+//Retrieve event from search string and returns an array with custom event objects
 + (void)retrieveEventsWithString:(NSString *)keyword andCompletion:(void(^)(NSArray *eventObjectsArray, NSError *error))complete
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kURLSearcStringForEvent,keyword]];
@@ -66,6 +67,8 @@
                            }];
 }
 
+//MARK:Helper Method
+//Helper method to taken an incoming array with dictionary objects and return it into an array with custom event object
 + (NSArray *)eventsFromArray:(NSArray *)incomingArray
 {
     NSMutableArray *newArray = [[NSMutableArray alloc] initWithCapacity:incomingArray.count];
@@ -78,6 +81,7 @@
     return newArray;
 }
 
+//Helper method that takes NSString of photoURL and returns and NSData
 - (void)retrieveImageWithCompletion:(void(^)(NSData *imageData, NSError *error))complete
 {
     NSURLRequest *imageReq = [NSURLRequest requestWithURL:self.photoURL];

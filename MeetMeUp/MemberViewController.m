@@ -23,7 +23,7 @@
     [super viewDidLoad];
     self.photoImageView.alpha = 0;
 
-    [Member retrieveEventsWithMemberIDString:self.memberID andCompletion:^(Member *member, NSError *error) {
+    [Member retrieveCommentsWithMemberIDString:self.memberID andCompletion:^(Member *member, NSError *error) {
         self.member = member;
     }];
 }

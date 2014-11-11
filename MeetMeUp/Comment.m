@@ -25,26 +25,6 @@
     return self;
 }
 
-+ (NSArray *)objectsFromArray:(NSArray *)incomingArray
-{
-    NSMutableArray *newArray = [[NSMutableArray alloc] initWithCapacity:incomingArray.count];
-    
-    for (NSDictionary *d in incomingArray) {
-        Comment *e = [[Comment alloc]initWithDictionary:d];
-        [newArray addObject:e];
-        
-    }
-    return newArray;
-}
-
-+ (NSDate *) dateFromNumber:(NSNumber *)number
-{
-    NSNumber *time = [NSNumber numberWithDouble:([number doubleValue] )];
-    NSTimeInterval interval = [time doubleValue];
-    return  [NSDate dateWithTimeIntervalSince1970:interval];
-    
-}
-
 + (void)retrieveCommentsWithEventIDString:(NSString *)eventID andCompletion:(void(^)(NSArray* commentObjectsArray, NSError *error))complete
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kURLEventIDforComments,eventID]];
@@ -77,6 +57,29 @@
                                    complete(nil,connectionError);
                                }
                            }];
+
+}
+
+//MARK: Helper Method
+//Takes an array of dictionary objects and returns an array of Comment objects
++ (NSArray *)objectsFromArray:(NSArray *)incomingArray
+{
+    NSMutableArray *newArray = [[NSMutableArray alloc] initWithCapacity:incomingArray.count];
+
+    for (NSDictionary *d in incomingArray) {
+        Comment *e = [[Comment alloc]initWithDictionary:d];
+        [newArray addObject:e];
+
+    }
+    return newArray;
+}
+
+//Changes timestamp into NSDate
++ (NSDate *) dateFromNumber:(NSNumber *)number
+{
+    NSNumber *time = [NSNumber numberWithDouble:([number doubleValue] )];
+    NSTimeInterval interval = [time doubleValue];
+    return  [NSDate dateWithTimeIntervalSince1970:interval];
 
 }
 
